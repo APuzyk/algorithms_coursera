@@ -27,7 +27,7 @@ def km(a, b):
     if a < 10 or b < 10:
         return a*b
     m = min(base10_size(a), base10_size(b))
-    m2 = floor(m/2)
+    m2 = int(m/2)
 
     a1, a0 = split_at(a, m2)
     b1, b0 = split_at(b, m2)
@@ -44,14 +44,19 @@ def base10_size(n):
 
 
 def split_at(n, b):
-    n1 = int(n/(b*10))
-    n0 = n - (n1*(b*10))
+    n1 = int(n/(10**b))
+    n0 = n - (n1*(10**b))
     return n1, n0
 
 
 assert 99813 == km(343, 291)
+print("asserted: 343 * 291 = 99813")
 assert 1628457 == km(543, 2999)
-
+print("asserted: 543 * 2999 = 1628457")
+test3 = 4879*5647
+print("assert: 4879 * 5647 = {}".format(test3))
+    print(km(4879, 5647))
+assert test3 == km(4879, 5647)
 # whatever python uses is substantially faster possibly a different algo or just c/c++ speed
 assert km(3141592653589793238462643383279502884197169399375105820974944592, 2718281828459045235360287471352662497757247093699959574966967627) == 2718281828459045235360287471352662497757247093699959574966967627*3141592653589793238462643383279502884197169399375105820974944592
 print(km(3141592653589793238462643383279502884197169399375105820974944592, 2718281828459045235360287471352662497757247093699959574966967627))
