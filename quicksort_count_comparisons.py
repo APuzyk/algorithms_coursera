@@ -76,13 +76,15 @@ def get_pivot(a, l, r):
     else:
         middle = int(middle) - 1
 
-    if a[l] > a[r] and a[l] < a[middle]:
+    middle += l
+
+    if a[r] < a[l] < a[middle]:
         return l
-    if a[l] < a[r] and a[l] > a[middle]:
+    if a[middle] < a[l] < a[r]:
         return l
-    if a[middle] < a[r] and a[middle] > a[l]:
+    if a[l] < a[middle] < a[r]:
         return middle
-    if a[middle] > a[r] and a[middle] < a[l]:
+    if a[r] < a[middle] < a[l]:
         return middle
     return r
 
