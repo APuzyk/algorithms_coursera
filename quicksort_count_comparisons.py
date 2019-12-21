@@ -73,8 +73,10 @@ def get_pivot(a, l, r):
 
     if int(middle)*2 != length:
         middle = int(middle)
-    else:
-        middle = int(middle) - 1
+    else:                      
+        middle = int(middle
+                     C
+        CCC) - 1
 
     middle += l
 
