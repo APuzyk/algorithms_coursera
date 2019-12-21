@@ -30,11 +30,12 @@ v = [i[0] for i in r]
 from random import randint
 
 def min_cut(v, e):
+
     while len(v) > 2:
         e_1 = e[randint(0, len(e) - 1)]
         v, e = contract(v, e, e_1)
 
-    return v, e, len(e)
+    return len(e)
 
 
 def contract(v, e, e_1):
@@ -47,23 +48,22 @@ def contract(v, e, e_1):
 
     for i in range(len(e)):
         if e[i][0] in (v1, v2):
-            e[i][0] = new_vert
+            e[i] = [new_vert, e[i][1]]
         if e[i][1] in (v1, v2):
-            e[i][1] = new_vert
+            e[i] = [e[i][0], new_vert]
 
     # unique verts
     v = list(set(v))
 
     # remove loops
-    i = 0
-    while i < (len(e)):
-        if e[i][0] == e[i][1]:
-            e.pop(i)
-        else:
-            i += 1
+    e_out = []
+    for i in range(len(e)):
+        if e[i][0] != e[i][1]:
+            e_out.append(e[i])
 
-    return v, e
+    return v, e_out
 
-v_o, e_o, num_cuts = min_cut(v, e)
-
-
+cuts = []
+for i in range(len(v)**2):
+    cuts.append(min_cut(v, e))
+min(cuts)
