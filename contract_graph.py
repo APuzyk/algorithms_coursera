@@ -1,3 +1,4 @@
+from math import log
 # Read Lines
 fn = '/home/apuzyk/Documents/algorithms_coursera/kargerMinCut.txt'
 
@@ -73,11 +74,10 @@ def contract(v, e, e_1):
     return v, e
 
 cuts = []
-num_runs = 200**2
+num_runs = int(200 * log(200)) + 1
 
 for i in range(num_runs):
-    v, e = prep_data(fn)
-    print('run: {0} of {1}'.format(i, num_runs))
-    cuts.append(min_cut(v, e))
+    v1, e1 = prep_data(fn)
+    cuts.append(min_cut(v1,e1))
 
 print(min(cuts))
