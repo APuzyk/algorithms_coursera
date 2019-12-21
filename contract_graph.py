@@ -1,30 +1,33 @@
 # Read Lines
 fn = '/home/apuzyk/Documents/algorithms_coursera/kargerMinCut.txt'
 
-with open(fn) as f:
-    r = f.readlines()
+def prep_data(fn):
 
-r = [i.split('\t') for i in r]
-r = [[i[0], i[1:(len(i)-1)]] for i in r]
+    with open(fn) as f:
+        r = f.readlines()
 
-#now it's node + adjecent nodes
-# create edge list
-e = []
-for i in r:
-    for j in i[1]:
-        e.append([i[0], j])
+    r = [i.split('\t') for i in r]
+    r = [[i[0], i[1:(len(i)-1)]] for i in r]
 
-for i in range(len(e)):
-    tmp = e[i]
-    if tmp[0] > tmp[1]:
-        tmp = [tmp[1], tmp[0]]
-    e[i] = tmp
+    #now it's node + adjecent nodes
+    # create edge list
+    e = []
+    for i in r:
+        for j in i[1]:
+            e.append([i[0], j])
 
-#hack as hell to remove dupes
-tmp = [i[0] + '_' + i[1] for i in e]
-e = [i.split('_') for i in list(set(tmp))]
+    for i in range(len(e)):
+        tmp = e[i]
+        if tmp[0] > tmp[1]:
+            tmp = [tmp[1], tmp[0]]
+        e[i] = tmp
 
-v = [i[0] for i in r]
+    #hack as hell to remove dupes
+    tmp = [i[0] + '_' + i[1] for i in e]
+    e = [i.split('_') for i in list(set(tmp))]
+
+    v = [i[0] for i in r]
+    return v, e
 
 #now we have a list of unique edges as well as verticies
 from random import randint
@@ -48,22 +51,33 @@ def contract(v, e, e_1):
 
     for i in range(len(e)):
         if e[i][0] in (v1, v2):
-            e[i] = [new_vert, e[i][1]]
+            e[i][0] = new_vert
         if e[i][1] in (v1, v2):
-            e[i] = [e[i][0], new_vert]
+            e[i][1] = new_vert
 
     # unique verts
-    v = list(set(v))
+    i = 0
+    for i in range(len(v)):
+        if v[i] == new_vert:
+            v.pop(i)
+            break
 
     # remove loops
-    e_out = []
-    for i in range(len(e)):
-        if e[i][0] != e[i][1]:
-            e_out.append(e[i])
+    i = 0
+    while i < len(e):
+        if e[i][0] == e[i][1]:
+            e.pop(i)
+        else:
+            i += 1
 
-    return v, e_out
+    return v, e
 
 cuts = []
-for i in range(len(v)**2):
+num_runs = 200**2
+
+for i in range(num_runs):
+    v, e = prep_data(fn)
+    print('run: {0} of {1}'.format(i, num_runs))
     cuts.append(min_cut(v, e))
-min(cuts)
+
+print(min(cuts))
