@@ -8,6 +8,8 @@ with open(file) as f:
 o = [i.rstrip().split(' ') for i in o]
 o = [i for i in o if i[0] != i[1]]
 
+# to test
+#o = [[1, 2], [1, 3], [2, 4], [3, 4]]
 #index at 0 to make things easier
 nodes = list(set([j for i in o for j in i]))
 len(nodes)
@@ -21,7 +23,6 @@ for i in o:
 
 visited = [False] * len(nodes)
 order = []
-
 # Iterate through nodes
 for node in nodes:
     #If a node isn't visited go through it
@@ -29,6 +30,7 @@ for node in nodes:
         # Create a stack for DFS and init with node
         stack = deque()
         stack.append(node)
+
         while len(stack) > 0:
             # Pop from the top of the stack (last one in)
             # for first iter it'll be our first node
@@ -38,25 +40,30 @@ for node in nodes:
                 # IF we haven't been to the node
                 # set visited to true and append each edge to the list
                 # that we haven't been to yet
-                #TODO how do we figure out when to label the thing
+
                 visited[v] = True
                 for w in g_r[v]:
-                    if not visited[w]:
-                        stack.append(w)
-            #
-            order.append(v)
+                    stack.append(w)
+                order.append(v)
+            # append in order of visiting
+            # we'll get dupes for those visited twice but
+            # if they're down stream they'll be closer to the end of the list
+            # later we'll double hit these but well ignore on second pass through
+            #order.append(v)
 
-order.reverse()
-
+#order.reverse()
+#order
+# Need to figure out how to get what's at the end of the shit
 visited = [False] * len(nodes)
 
 scc = []
 num_scc = 0
-stack = deque()
 for v in order:
     if not visited[v]:
         scc.append([])
+        stack = deque()
         stack.append(v)
+
         while len(stack) > 0:
             w = stack.pop()
             if not visited[w]:
@@ -67,4 +74,5 @@ for v in order:
 
 o = [len(i) for i in scc]
 o.sort(reverse=True)
-o
+print(o[:5])
+scc
