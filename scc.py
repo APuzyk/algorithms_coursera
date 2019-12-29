@@ -9,7 +9,20 @@ o = [i.rstrip().split(' ') for i in o]
 o = [i for i in o if i[0] != i[1]]
 
 # to test
-#o = [[1, 2], [1, 3], [2, 4], [3, 4]]
+o = [[5, 9],
+[9,8],
+[8,5],
+[9,4],
+[9,7],
+[8,7],
+[7,1],
+[1,6],
+[6,7],
+[6,3],
+[3,7],
+[1,2],
+[4,2]]
+
 #index at 0 to make things easier
 nodes = list(set([j for i in o for j in i]))
 len(nodes)
@@ -23,37 +36,30 @@ for i in o:
 
 visited = [False] * len(nodes)
 order = []
+tracker = []
 # Iterate through nodes
+node = nodes[1]
 for node in nodes:
-    #If a node isn't visited go through it
     if not visited[node]:
-        # Create a stack for DFS and init with node
         stack = deque()
         stack.append(node)
-
         while len(stack) > 0:
-            # Pop from the top of the stack (last one in)
-            # for first iter it'll be our first node
-            # otherwise it's last one we've visited
             v = stack.pop()
             if not visited[v]:
-                # IF we haven't been to the node
-                # set visited to true and append each edge to the list
-                # that we haven't been to yet
-
                 visited[v] = True
                 for w in g_r[v]:
                     stack.append(w)
-                order.append(v)
-            # append in order of visiting
-            # we'll get dupes for those visited twice but
-            # if they're down stream they'll be closer to the end of the list
-            # later we'll double hit these but well ignore on second pass through
-            #order.append(v)
 
-#order.reverse()
-#order
-# Need to figure out how to get what's at the end of the shit
+                #we append to tracker as we discover new nodes
+                # here we check if the current node is a child of the previous node
+                # if not we add the previous nodes we iterated through until we reach the og parent
+                # basically we're adding paths until we re reach the parent node
+                while tracker and v not in g_r[tracker[-1]]:
+                    order.append(tracker.pop())
+                tracker.append(v)
+
+order = tracker + order[::-1]
+order
 visited = [False] * len(nodes)
 
 scc = []
