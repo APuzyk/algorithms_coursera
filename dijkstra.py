@@ -20,7 +20,7 @@ x[0] = True #init with our source vert
 # init the distance list
 dist = [1000000] * len(o)
 dist[0] = 0
-i = 1
+
 while not all(x):
     print(f"loop number {i}")
     # Add edges with head in X and tail in G-X with their final potential distance
@@ -36,7 +36,6 @@ while not all(x):
     idx = [i[2] for i in to_check].index(min([i[2] for i in to_check]))
     x[to_check[idx][1]] = True
     dist[to_check[idx][1]] = to_check[idx][2]
-    i += 1
 
 # to print 7,37,59,82,99,115,133,165,188,197
 print(f"{dist[6]},{dist[36]},{dist[58]},{dist[81]},{dist[98]},{dist[114]},{dist[132]},{dist[164]},{dist[187]},{dist[196]}")
