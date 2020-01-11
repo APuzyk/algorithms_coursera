@@ -7,9 +7,11 @@ o = [int(i.rstrip()) for i in o]
 o = dict.fromkeys(o, 1)
 num_two_sums = 0
 for t in range(-10000, 10001):
+    print(t)
     for i in o.keys():
         if t-i != i:
             if o.get(t-i) is not None:
                 num_two_sums += 1
+                break
 
 print(num_two_sums)
