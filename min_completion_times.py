@@ -22,7 +22,8 @@ for i in range(len(diff_a)):
         diff_a[i].append(diff_a[i][1] + diff_a[i-1][3])
         diff_a[i].append(diff_a[i][3] * diff_a[i][0])
 
-sum([i[4] for i in diff_a])
+print(sum([i[4] for i in diff_a]))
+# 69119377652
 
 ## by divisor
 div_a = [i + [i[0]/i[1]] for i in o]
@@ -38,5 +39,5 @@ for i in range(len(div_a)):
         div_a[i].append(div_a[i][1] + div_a[i-1][3])
         div_a[i].append(div_a[i][3] * div_a[i][0])
 
-sum([i[4] for i in div_a])
-
+print(sum([i[4] for i in div_a]))
+# 67311454237
