@@ -48,3 +48,4 @@ for i in edges:
         t.append(i)
         uf_update(n_uf, i[0], i[1])
 
+print(i[2])
