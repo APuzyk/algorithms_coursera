@@ -49,6 +49,12 @@ for i in range(len(nodes_vals)):
     print(i)
     nd[i] = [j + 1 for j, x in enumerate(o) if x == nodes_vals[i]]
 
+#save because slow as fuck
+import pickle
+filename = '/home/apuzyk/Documents/algorithms_coursera/clustering_big_dict.pickle'
+with open(filename, ‘wb’) as f:
+    pickle.dump(nd, f)
+
 for i in bit_masks:
     for k, v in nd:
         to_compare = k ^ i
