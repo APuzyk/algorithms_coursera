@@ -5,16 +5,7 @@ with open(file) as f:
 
 o = [i.strip().replace(' ', '') for i in o][1:]
 o = [int(i, 2) for i in o]
-for i in range(len(o)):
-    o[i] = [bool(int(j)) for j in o[i]]
 
-def h_dist(v0, v1):
-    #calc hamming dist
-    o = 0
-    for i in range(len(v1)):
-        if v0[i] == v1[i]:
-            o += 1
-    return o
 #create bit mask outputs
 bit_masks = [0]
 zeros = [0 for i in range(24)]
@@ -29,8 +20,6 @@ for i in itertools.combinations(range(24), 2):
     tmp[i[1]] = '1'
     bit_masks.append(int(''.join(tmp), 2))
 
-#parent, size
-n_uf = [[i+1, 1] for i in range(len(o))]
 
 #node, parent
 def uf_find(uf, v):
@@ -51,3 +40,22 @@ def uf_update(uf, v, u):
         uf[u - 1][0] = v
         #update depth
         uf[u - 1][1] = uf[v - 1][1] + 1
+
+#create dict of nodes
+n_uf = [[i+1, 1] for i in range(len(o))]
+nodes_vals = list(set(o))
+nd = {}
+for i in range(len(nodes_vals)):
+    print(i)
+    nd[i] = [j + 1 for j, x in enumerate(o) if x == nodes_vals[i]]
+
+for i in bit_masks:
+    for k, v in nd:
+        to_compare = k ^ i
+        if nd.get(to_compare) is not None:
+            to_union = [j for j in v]
+            to_union.extend([j for j in nd.get(to_compare)])
+            start = to_union.pop()
+            for j in to_union:
+                uf_update(n_uf, start, j)
+
