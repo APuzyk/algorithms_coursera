@@ -1,4 +1,5 @@
 import itertools
+from networkx.utils import UnionFind
 file = '/home/apuzyk/Documents/algorithms_coursera/clustering_big.txt'
 with open(file) as f:
     o = f.readlines()
@@ -21,7 +22,7 @@ for i in itertools.combinations(range(24), 2):
     tmp[i[1]] = '1'
     bit_masks.append(int(''.join(tmp), 2))
 
-uf = UnionFind(len(o))
+uf = UnionFind([i for i in range(len(o))])
 #create dict of nodes
 nodes_vals = list(set(o))
 nd = {}
@@ -34,10 +35,7 @@ for i in range(len(o)):
 #union dupes:
 for k, v in nd.items():
     if len(v) > 1:
-        to_start = v[0]
-        to_end = v[1:]
-        for j in to_end:
-            uf.union(to_start, j)
+        uf.union(*v)
 
 for i in range(len(bit_masks)):
     print('Iteration: {0} of {1}'.format(i + 1, len(bit_masks)))
@@ -47,11 +45,7 @@ for i in range(len(bit_masks)):
         if nd.get(to_compare) is not None:
             to_union = [j for j in nd.get(k)]
             to_union += nd.get(to_compare)
-            start = to_union[0]
-            to_merge = to_union[1:]
-            for j in to_merge:
-                if uf.find(j) != uf.find(start):
-                    uf.union(start, j)
+            uf.union(*to_union)
 
 
-print(uf.num_clusters())
+print(len(list(uf.to_sets())))
