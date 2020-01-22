@@ -1,39 +1,69 @@
+import heapq
+
+class Node:
+    def __init__(self, name, left=None, right=None):
+        self.name = name
+        self.left = left
+        self.right = right
+
+    def is_leaf(self):
+        return self.left is None and self.right is None
+
+
+class HuffmanCodes:
+    def __init__(self, nodes, weights):
+        self.code_dict = {}
+
+        self.heap = []
+        if len(nodes) != len(weights):
+            raise RuntimeError
+        for i in range(len(nodes)):
+            self.heap.append([weights[i], nodes[i]])
+
+        heapq.heapify(self.heap)
+
+    def create_graph(self):
+        while len(self.heap) > 1:
+            # Pop Two Lowest Weights
+            t1 = heapq.heappop(self.heap)
+            t2 = heapq.heappop(self.heap)
+
+            # create new node and push with weight of below
+            t3 = Node(name=None, left=t1[1], right=t2[1])
+            heapq.heappush(self.heap, [t1[0] + t2[0], t3])
+
+    def create_codes(self):
+        if len(self.heap) > 1:
+            raise RuntimeError("heap too big, did you create the graph")
+        self._descend(self.heap[0][1].left, [0])
+        self._descend(self.heap[0][1].right, [1])
+
+
+    def _descend(self, node, curr_path):
+        if node.is_leaf():
+            self.code_dict[node.name] = curr_path
+        else:
+            left_path = curr_path + [0]
+            right_path = curr_path + [1]
+
+            self._descend(node.left, left_path)
+            self._descend(node.right, right_path)
+
+
+
 file = '/home/apuzyk/Documents/algorithms_coursera/huffman.txt'
 with open(file) as f:
     o = f.readlines()
 
-
-# node, weight, Left, right
-t = [[i, o[i], None, None] for i in range(len(o))] #nodes
-t = sorted(t, key=lambda x: x[1])
-parent_dict = {}
+o = [int(i.rstrip()) for i in o[1:]]
+nodes = []
 for i in range(len(o)):
-    parent_dict[i] = None
+    nodes.append(Node(i))
 
-o_tree = [[i, i, i] for i in range(len(o))]
-meta_node = len(o)
-while len(t) > 1:
-    t1 = t.pop()
-    t2 = t.pop()
-    t3 = [meta_node, t1[1] + t2[1], t1[0], t2[0]]
-    parent_dict[t1[0]] = meta_node
-    parent_dict[t2[0]] = meta_node
-    f.append(t3)
-    f = sorted(f, key=lambda x: x[1]) #todo improve with heap
-    meta_node += 1
+hm = HuffmanCodes(nodes, o)
+hm.create_graph()
+hm.create_codes()
 
-#reconstruct
-o_depths = []
-traces = []
-for i in range(o):
-    root = f[0][0]
-    trace = []
-    search = i
-    depth = 0
-    while parent_dict[search] != root:
-        trace.append(search)
-        search = parent_dict[search]
-        depth += 1
+print('max len is: {}'.format(max([len(i) for i in hm.code_dict.values()])))
 
-    trace.append(search)
-    traces.append(trace)
+print('min len is: {}'.format(min([len(i) for i in hm.code_dict.values()])))
