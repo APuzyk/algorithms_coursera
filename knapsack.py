@@ -2,8 +2,8 @@ class KnapsackFiller:
     def __init__(self, size, items):
         self.size = size
         self.items = items
-        self._to_fill = None
-        self._last_pass = None
+        self._to_fill = []
+        self._last_pass = []
 
     def fill_knapsack(self):
         self.forward_pass()
@@ -27,11 +27,30 @@ class KnapsackFiller:
                         o_2 = self._to_fill[i - 1][0] + self.items[i - 1][0]
                     self._to_fill[i][c] = max([o_1, o_2])
 
-    def forward_pass_noreconstruction(self):
-        self._last_pass = [0]*(self.size + 1)
-        curr_pass = [0]*(self.size + 1)
+    def forward_pass_copy(self):
+        self._to_fill = [[None] * (self.size + 1) for i in range(len(self.items) + 1)]
+        for i in range(self.size + 1):
+            self._to_fill[0][i] = 0
 
         for i in range(1, len(self.items)+1):
+            for c in range(self.size + 1):
+                s_i = self.items[i-1][1]
+                if s_i > c:
+                    self._to_fill[i][c] = self._to_fill[i-1][c]
+                else:
+                    o_1 = self._to_fill[i-1][c]
+                    if c - s_i > 0:
+                        o_2 = self._to_fill[i - 1][c - s_i] + self.items[i - 1][0]
+                    else:
+                        o_2 = self._to_fill[i - 1][0] + self.items[i - 1][0]
+                    self._to_fill[i][c] = max([o_1, o_2])
+
+    def forward_pass_noreconstruction(self):
+        self._last_pass = [0]*(self.size + 1)
+
+        for i in range(1, len(self.items)+1):
+            print(f"Run {i} of {len(self.items)}")
+            curr_pass = [0] * (self.size + 1)
             for c in range(self.size + 1):
                 s_i = self.items[i-1][1]
                 v_i = self.items[i - 1][0]
@@ -68,6 +87,8 @@ kf = KnapsackFiller(size=size, items=o)
 kf.fill_knapsack()
 
 print(f"answer to problem 1 is: {kf.get_total_value()}")
+kf.forward_pass_noreconstruction()
+print(f"answer to problem 1 is: {kf.get_total_value_fast()}")
 
 #problem 2
 file = '/home/apuzyk/Documents/algorithms_coursera/knapsack_big.txt'
@@ -76,4 +97,9 @@ with open(file) as f:
 
 o = [list(map(int, i.rstrip().split(' '))) for i in o]
 size = o.pop(0)[0]
-items = [i for i in o if i[1] <= size]
+items = o
+
+kf_big = KnapsackFiller(size=size, items=items)
+
+kf_big.forward_pass_noreconstruction()
+print(f"answer to problem 2: {kf_big.get_total_value_fast()}")
